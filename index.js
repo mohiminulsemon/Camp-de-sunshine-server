@@ -15,8 +15,7 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
-const uri =
-  "mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.02w34e6.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.02w34e6.mongodb.net/?retryWrites=true&w=majority`;
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -31,6 +30,10 @@ async function run() {
     const usersCollection = client.db("campdb").collection("users");
     const classesCollection = client.db("campdb").collection("classes");
     const bookingsCollection = client.db("campdb").collection("bookings");
+
+    app.get("/", (req, res) => {
+      res.send("camp Server is running..");
+    });
 
     // Save user email and role in DB
     app.put("/users/:email", async (req, res) => {
@@ -54,6 +57,12 @@ async function run() {
       console.log(result);
       res.send(result);
     });
+    // Get all user
+    app.get("/all_users", async (req, res) => {
+      const users = usersCollection.find();
+      const result = await users.toArray();
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
@@ -66,10 +75,6 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-app.get("/", (req, res) => {
-  res.send("camp Server is running..");
-});
 
 app.listen(port, () => {
   console.log(`camp is running on port ${port}`);
