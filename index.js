@@ -89,13 +89,31 @@ async function run() {
         res.send(result)
       })
   
-      // Get a single class by id
-      app.get('/classes/:id', async (req, res) => {
-        const id = req.params.id
-        const query = { _id: new ObjectId(id) }
-        const result = await classesCollection.findOne(query)
-        console.log(result)
-        res.send(result)
+      // // Get a single class by id
+    app.get("/classes/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const filter = { _id: new ObjectId(id) };
+
+      const data = await classesCollection.findOne(filter);
+
+      res.send(data);
+    });
+
+    //update class status
+      app.patch('/classes/:id', async (req, res) => {
+        const id = req.params.id;
+        console.log(id);
+        const filter = { _id: new ObjectId(id) };
+        const updateDoc = {
+          $set: {
+            status: 'approved'
+          },
+        };
+  
+        const result = await classesCollection.updateOne(filter, updateDoc);
+        res.send(result);
+  
       })
   
       // Save a class in database
