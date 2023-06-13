@@ -65,8 +65,8 @@ async function run() {
     });
 
      // Get all rooms
-     app.get('/rooms', async (req, res) => {
-      const result = await roomsCollection.find().toArray()
+     app.get('/classes', async (req, res) => {
+      const result = await classesCollection.find().toArray()
       res.send(result)
     })
 
