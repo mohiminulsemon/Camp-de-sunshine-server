@@ -98,11 +98,11 @@ async function run() {
         res.send(result)
       })
   
-      // Save a room in database
+      // Save a class in database
       app.post('/classes', async (req, res) => {
-        const room = req.body
-        console.log(room)
-        const result = await classesCollection.insertOne(room)
+        const classData = req.body
+        console.log(classData)
+        const result = await classesCollection.insertOne(classData)
         res.send(result)
       })
 
