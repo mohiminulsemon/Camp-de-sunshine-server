@@ -103,12 +103,11 @@ async function run() {
     //update class status
       app.patch('/classes/:id', async (req, res) => {
         const id = req.params.id;
-        console.log(id);
+        // console.log(id);
+        const user = req.body;
         const filter = { _id: new ObjectId(id) };
         const updateDoc = {
-          $set: {
-            status: 'approved'
-          },
+          $set: user,
         };
   
         const result = await classesCollection.updateOne(filter, updateDoc);
