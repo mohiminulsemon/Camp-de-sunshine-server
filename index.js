@@ -89,7 +89,23 @@ async function run() {
         res.send(result)
       })
   
-   
+      // Get a single class by id
+      app.get('/classes/:id', async (req, res) => {
+        const id = req.params.id
+        const query = { _id: new ObjectId(id) }
+        const result = await classesCollection.findOne(query)
+        console.log(result)
+        res.send(result)
+      })
+  
+      // Save a room in database
+      app.post('/classes', async (req, res) => {
+        const room = req.body
+        console.log(room)
+        const result = await classesCollection.insertOne(room)
+        res.send(result)
+      })
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
