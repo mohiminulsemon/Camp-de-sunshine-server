@@ -64,14 +64,32 @@ async function run() {
       res.send(result);
     });
 
-     // Get all rooms
+     // Get all classes
      app.get('/classes', async (req, res) => {
       const result = await classesCollection.find().toArray()
       res.send(result)
     })
 
  
-
+       // delete class
+       app.delete('/classes/:id', async (req, res) => {
+        const id = req.params.id
+        const query = { _id: new ObjectId(id) }
+        const result = await classesCollection.deleteOne(query)
+        res.send(result)
+      })
+  
+      // Get a single class by instructor's
+      app.get('/classes/:email', async (req, res) => {
+        const email = req.params.email
+        const query = { 'instructorEmail': email }
+        const result = await classesCollection.find(query).toArray()
+  
+        console.log(result)
+        res.send(result)
+      })
+  
+   
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
