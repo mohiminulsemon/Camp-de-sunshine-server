@@ -136,18 +136,21 @@ async function run() {
           booked: status,
         },
       };
-      const update = await roomsCollection.updateOne(query, updateDoc);
+      const update = await classesCollection.updateOne(query, updateDoc);
       res.send(update);
     });
 
-    // Get bookings for guest
+    // Get all bookings
     app.get("/bookings", async (req, res) => {
-      const email = req.query.email;
+      const result = await bookingsCollection.find().toArray();
+      res.send(result);
+    });
 
-      if (!email) {
-        res.send([]);
-      }
-      const query = { "guest.email": email };
+    // Get bookings for guest
+    app.get("/bookings/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { studentEmail: email };
+
       const result = await bookingsCollection.find(query).toArray();
       res.send(result);
     });
