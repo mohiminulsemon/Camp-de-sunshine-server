@@ -35,6 +35,8 @@ async function run() {
       res.send("camp Server is running..");
     });
 
+    // <<<<<<<<<-------------------------------------------Users------------------------------------------->>>
+
     // Save user email and role in DB
     app.put("/users/:email", async (req, res) => {
       const email = req.params.email;
@@ -63,33 +65,33 @@ async function run() {
       const result = await user.toArray();
       res.send(result);
     });
+    //  <<<<<<< -------------------------------- Classes ------------------------------------>>>>>>>>>>
 
-     // Get all classes
-     app.get('/classes', async (req, res) => {
-      const result = await classesCollection.find().toArray()
-      res.send(result)
-    })
+    // Get all classes
+    app.get("/classes", async (req, res) => {
+      const result = await classesCollection.find().toArray();
+      res.send(result);
+    });
 
- 
-       // delete class
-       app.delete('/classes/:id', async (req, res) => {
-        const id = req.params.id
-        const query = { _id: new ObjectId(id) }
-        const result = await classesCollection.deleteOne(query)
-        res.send(result)
-      })
-  
-      // Get a single class by instructor's
-      app.get('/classes/:email', async (req, res) => {
-        const email = req.params.email
-        const query = { 'instructorEmail': email }
-        const result = await classesCollection.find(query).toArray()
-  
-        console.log(result)
-        res.send(result)
-      })
-  
-      // // Get a single class by id
+    // delete class
+    app.delete("/classes/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await classesCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // Get a single class by instructor's
+    app.get("/classes/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { instructorEmail: email };
+      const result = await classesCollection.find(query).toArray();
+
+      console.log(result);
+      res.send(result);
+    });
+
+    // // Get a single class by id
     app.get("/classes/:id", async (req, res) => {
       const id = req.params.id;
 
@@ -101,28 +103,71 @@ async function run() {
     });
 
     //update class status
-      app.patch('/classes/:id', async (req, res) => {
-        const id = req.params.id;
-        // console.log(id);
-        const user = req.body;
-        const filter = { _id: new ObjectId(id) };
-        const updateDoc = {
-          $set: user,
-        };
-  
-        const result = await classesCollection.updateOne(filter, updateDoc);
-        res.send(result);
-  
-      })
-  
-      // Save a class in database
-      app.post('/classes', async (req, res) => {
-        const classData = req.body
-        console.log(classData)
-        const result = await classesCollection.insertOne(classData)
-        res.send(result)
-      })
+    app.patch("/classes/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const user = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: user,
+      };
 
+      const result = await classesCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
+
+    // Save a class in database
+    app.post("/classes", async (req, res) => {
+      const classData = req.body;
+      console.log(classData);
+      const result = await classesCollection.insertOne(classData);
+      res.send(result);
+    });
+
+    // <<<-------------------------------------------Bookings ------------------------------------------>>>>>
+
+    // update class booking status
+    app.patch("/classes/status/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body.status;
+      const query = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          booked: status,
+        },
+      };
+      const update = await roomsCollection.updateOne(query, updateDoc);
+      res.send(update);
+    });
+
+    // Get bookings for guest
+    app.get("/bookings", async (req, res) => {
+      const email = req.query.email;
+
+      if (!email) {
+        res.send([]);
+      }
+      const query = { "guest.email": email };
+      const result = await bookingsCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // Save a booking in database
+    app.post("/bookings", async (req, res) => {
+      const booking = req.body;
+      console.log(booking);
+      const result = await bookingsCollection.insertOne(booking);
+      res.send(result);
+    });
+
+    // delete a booking
+
+    app.delete("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await bookingsCollection.deleteOne(query);
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
