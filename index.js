@@ -126,23 +126,9 @@ async function run() {
 
     // <<<-------------------------------------------Bookings ------------------------------------------>>>>>
 
-    // update class booking status
-    app.patch("/classes/status/:id", async (req, res) => {
-      const id = req.params.id;
-      const status = req.body.status;
-      const query = { _id: new ObjectId(id) };
-      const updateDoc = {
-        $set: {
-          booked: status,
-        },
-      };
-      const update = await classesCollection.updateOne(query, updateDoc);
-      res.send(update);
-    });
-
     // Get all bookings
     app.get("/bookings", async (req, res) => {
-      const result = await bookingsCollection.find().toArray();
+      const result = await bookingsCollection.find({}).toArray();
       res.send(result);
     });
 
@@ -154,6 +140,20 @@ async function run() {
       const result = await bookingsCollection.find(query).toArray();
       res.send(result);
     });
+
+        //update payment status
+        app.patch("/bookings/:id", async (req, res) => {
+          const id = req.params.id;
+          // console.log(id);
+          const user = req.body;
+          const filter = { _id: new ObjectId(id) };
+          const updateDoc = {
+            $set: user,
+          };
+    
+          const result = await bookingsCollection.updateOne(filter, updateDoc);
+          res.send(result);
+        });
 
     // Save a booking in database
     app.post("/bookings", async (req, res) => {
