@@ -70,6 +70,7 @@ async function run() {
     // Get all classes
     app.get("/classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
+      // const result = await classesCollection.find().sort({availableSeats: -1}).toArray();
       res.send(result);
     });
 
@@ -141,19 +142,19 @@ async function run() {
       res.send(result);
     });
 
-        //update payment status
-        app.patch("/bookings/:id", async (req, res) => {
-          const id = req.params.id;
-          // console.log(id);
-          const user = req.body;
-          const filter = { _id: new ObjectId(id) };
-          const updateDoc = {
-            $set: user,
-          };
-    
-          const result = await bookingsCollection.updateOne(filter, updateDoc);
-          res.send(result);
-        });
+    //update payment status
+    app.patch("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+      // console.log(id);
+      const user = req.body;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: user,
+      };
+
+      const result = await bookingsCollection.updateOne(filter, updateDoc);
+      res.send(result);
+    });
 
     // Save a booking in database
     app.post("/bookings", async (req, res) => {
