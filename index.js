@@ -164,6 +164,14 @@ async function run() {
       res.send(result);
     });
 
+    // // Get a single booking by id
+    app.get("/bookings/:id", async (req, res) => {
+      const id = req.params.id;
+
+      const data = await bookingsCollection.findOne({ _id: new ObjectId(id) });
+
+      res.send(data);
+    });
     // delete a booking
 
     app.delete("/bookings/:id", async (req, res) => {
